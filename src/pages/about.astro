@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="About Us" description="Exodia Labs is a strategic research space dedicated to the intersection of artificial intelligence, advanced cybersecurity, and autonomous systems.">
+	<div class="max-w-7xl mx-auto py-16 md:py-24 px-4 md:px-8">
+		
+		<!-- Hero Section -->
+		<header class="mb-20 md:mb-32 flex flex-col items-center text-center">
+			<h1 class="text-5xl md:text-6xl lg:text-8xl font-serif font-bold tracking-tight mb-6 md:mb-8 leading-tight">
+				About the <span class="text-primary italic">Laboratory</span>
+			</h1>
+			<p class="text-lg md:text-xl text-text-secondary max-w-3xl leading-relaxed">
+				Exodia Labs is a strategic research space dedicated to the intersection of <span class="text-text-primary">artificial intelligence</span>, <span class="text-text-primary">advanced cybersecurity</span>, and <span class="text-text-primary">autonomous systems</span>.
+			</p>
+		</header>
+
+		<!-- Our Philosophy -->
+		<section class="mb-20 md:mb-32 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-24 items-start">
+			<div class="lg:col-span-4">
+				<h2 class="text-3xl md:text-4xl font-serif border-b border-border pb-4">Our Philosophy</h2>
+			</div>
+			<div class="lg:col-span-8 space-y-6 md:space-y-8 text-base md:text-lg text-text-secondary leading-relaxed">
+				<p>
+					Driven by the pursuit of digital sovereignty, the platform serves as a foundation for exploring the full spectrum of security, from offensive methodologies to autonomous defense.
+				</p>
+				<p>
+					Based on the conviction that security is a fundamental right, Exodia Labs functions as an experimental development ground for building autonomous tools that empower and protect. The projects under Exodia Labs represent a journey through the most challenging frontiers of software engineering, from the internals of secure execution to the high-level orchestration of agentic swarms.
+				</p>
+			</div>
+		</section>
+
+		<!-- Core Research Areas -->
+		<section class="mb-20 md:mb-32">
+			<h2 class="text-3xl md:text-4xl font-serif mb-8 md:mb-12 border-b border-border pb-4 text-left">Core Research Areas</h2>
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+				<div class="glass-card p-6 md:p-10 group hover:border-primary/50 transition-all duration-500 relative">
+					<div class="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+						<h3 class="text-2xl md:text-3xl font-serif group-hover:text-primary transition-colors">Agentic Swarms</h3>
+						<span class="text-[10px] md:text-xs font-mono text-primary bg-primary/10 px-3 py-1 rounded-full uppercase tracking-widest">Research</span>
+					</div>
+					<p class="text-sm md:text-base text-text-secondary leading-relaxed">
+						The laboratory focuses on orchestrating specialized AI agents into high-performance swarms. Moving beyond simple interaction to autonomous execution and multi-agent coordination for complex security missions.
+					</p>
+				</div>
+				<div class="glass-card p-6 md:p-10 group hover:border-primary/50 transition-all duration-500 relative">
+					<div class="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+						<h3 class="text-2xl md:text-3xl font-serif group-hover:text-primary transition-colors">Secured Sandboxing</h3>
+						<span class="text-[10px] md:text-xs font-mono text-primary bg-primary/10 px-3 py-1 rounded-full uppercase tracking-widest">Engineering</span>
+					</div>
+					<p class="text-sm md:text-base text-text-secondary leading-relaxed">
+						Security research requires total isolation. The development approach prioritizes deep sandboxing and secure execution environments to analyze and neutralize emerging threats without compromise.
+					</p>
+				</div>
+			</div>
+		</section>
+
+		<!-- Operational Model -->
+		<section class="mb-12">
+			<h2 class="text-3xl md:text-4xl font-serif mb-8 md:mb-12 border-b border-border pb-4 text-left">Operational Model</h2>
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+				<div class="flex flex-col">
+					<div class="flex items-center gap-4 mb-4 md:mb-6">
+						<span class="h-3 w-3 rounded-full bg-primary shrink-0"></span>
+						<h3 class="text-xl md:text-2xl font-serif">Community Collaboration</h3>
+					</div>
+					<p class="text-sm md:text-base text-text-secondary leading-relaxed">
+						We believe in pushing the boundaries of AI security through strategic community involvement. This ranges from developing open-source frameworks intended to accelerate research in autonomous cybersecurity-such as the Exodus engine-to integrating our specialized behavioral AI models into global platforms like VirusTotal's Crowdsourced AI, empowering the broader ecosystem with advanced threat detection.
+					</p>
+				</div>
+				
+				<div class="flex flex-col">
+					<div class="flex items-center gap-4 mb-4 md:mb-6">
+						<span class="h-3 w-3 rounded-full bg-text-secondary shrink-0"></span>
+						<h3 class="text-xl md:text-2xl font-serif text-text-secondary">Internal Research</h3>
+					</div>
+					<p class="text-sm md:text-base text-text-secondary leading-relaxed opacity-80">
+						Our internal projects are restricted-access platforms engineered for high-security environments. These systems act as closed-loop sandboxes for fine-tuning large language models, executing and analyzing emerging malware safely, and orchestrating highly sensitive, autonomous agent swarms. They prioritize <span class="text-text-primary">absolute isolation</span>, <span class="text-text-primary">deep telemetry</span>, and <span class="text-text-primary">secure execution</span> over public deployment.
+					</p>
+				</div>
+			</div>
+		</section>
+
+	</div>
+</BaseLayout>

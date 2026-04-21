@@ -1,0 +1,64 @@
+---
+import { Copy, Check } from '@lucide/astro';
+
+interface Props {
+  hash: string;
+}
+
+const { hash } = Astro.props;
+const truncatedHash = `${hash.slice(0, 8)}...${hash.slice(-8)}`;
+const vtLink = `https://www.virustotal.com/gui/file/${hash}`;
+---
+
+<span class="inline-flex items-center gap-1.5 bg-bg-secondary border border-border rounded-md px-2 py-0.5 text-[0.85em] font-mono whitespace-nowrap align-middle">
+  <a href={vtLink} target="_blank" rel="noopener noreferrer" class="flex items-center gap-1.5 text-primary hover:underline" title="View on VirusTotal">
+    <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 89">
+      <path fill="#0b4dda" fill-rule="evenodd" d="M45.292 44.5 0 89h100V0H0l45.292 44.5zM90 80H22l35.987-35.2L22 9h68v71z"></path>
+    </svg>
+    {truncatedHash}
+  </a>
+  <button
+    class="text-text-secondary hover:text-primary transition-colors cursor-pointer p-0.5 rounded-sm focus:outline-none copy-hash-btn"
+    data-hash={hash}
+    aria-label="Copy hash"
+    title="Copy hash"
+  >
+    <Copy class="w-3.5 h-3.5 copy-icon" />
+    <Check class="w-3.5 h-3.5 check-icon hidden text-green-500" />
+  </button>
+</span>
+
+<script>
+  // Script runs once on the page to attach event listeners to all buttons
+  document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll('.copy-hash-btn');
+    
+    buttons.forEach(button => {
+      button.addEventListener('click', async () => {
+        const hash = button.getAttribute('data-hash');
+        if (!hash) return;
+        
+        try {
+          await navigator.clipboard.writeText(hash);
+          
+          // Toggle icons
+          const copyIcon = button.querySelector('.copy-icon');
+          const checkIcon = button.querySelector('.check-icon');
+          
+          if (copyIcon && checkIcon) {
+            copyIcon.classList.add('hidden');
+            checkIcon.classList.remove('hidden');
+            
+            // Revert after 2 seconds
+            setTimeout(() => {
+              copyIcon.classList.remove('hidden');
+              checkIcon.classList.add('hidden');
+            }, 2000);
+          }
+        } catch (err) {
+          console.error('Failed to copy hash: ', err);
+        }
+      });
+    });
+  });
+</script>

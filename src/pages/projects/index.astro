@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+
+const isProd = import.meta.env.PROD;
+
+const projectEntries = await Promise.all(
+	(await getCollection('projects', ({ data }) => {
+		return isProd ? !data.draft : true;
+	}))
+		.sort((a, b) => a.data.order - b.data.order)
+);
+---
+
+<BaseLayout title="Projects" description="Explore Exodia Labs initiatives, from open-source community experiments to internal secure research platforms.">
+	<div class="max-w-7xl mx-auto py-24 px-8">
+		<header class="mb-24 flex flex-col items-center text-center">
+			<h1 class="text-6xl md:text-8xl font-serif font-bold tracking-tight mb-8 leading-tight">
+				Lab <span class="text-primary italic">Projects</span>
+			</h1>
+			<p class="text-xl text-text-secondary max-w-3xl leading-relaxed">
+				Exodia Labs operates two distinct tiers of initiatives: <span class="text-text-primary">Community</span> projects designed for open collaboration, and <span class="text-text-primary">Internal Research</span> platforms operating as isolated sandboxes for advanced AI workflows.
+			</p>
+		</header>
+
+		<div class="flex flex-col gap-32 lg:gap-48 mb-24">
+			{projectEntries.map((entry, index) => (
+				<article class={`flex flex-col lg:flex-row gap-12 lg:gap-24 items-center group relative ${index % 2 !== 0 ? 'lg:flex-row-reverse' : ''}`}>
+					
+					{/* Image Half */}
+					{entry.data.image && (
+						<div class="w-full lg:w-[55%] flex-shrink-0">
+							<div class={`aspect-video overflow-hidden rounded-xl border border-border/40 bg-bg-secondary relative transition-all duration-700 group-hover:border-primary/30 group-hover:shadow-[0_0_40px_rgba(102,126,234,0.05)] ${entry.data.status === 'Classified' ? 'border-dashed' : ''}`}>
+								<a href={`/projects/${entry.slug}`} class="absolute inset-0 z-20">
+									<span class="sr-only">View project: {entry.data.title}</span>
+								</a>
+								<Image 
+									src={entry.data.image} 
+									alt={entry.data.imageAlt || entry.data.title}
+									format="webp"
+									width={1200}
+									height={675}
+									class={`w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 ${entry.data.status === 'Classified' ? 'grayscale opacity-70' : ''}`}
+								/>
+								<div class="absolute inset-0 bg-gradient-to-t from-bg-primary/20 to-transparent pointer-events-none mix-blend-overlay"></div>
+							</div>
+						</div>
+					)}
+					
+					{/* Content Half */}
+					<div class={`w-full ${entry.data.image ? 'lg:w-[45%]' : 'lg:w-3/4 mx-auto'} flex flex-col justify-center`}>
+						<div class={`flex flex-wrap items-center gap-4 mb-8 ${entry.data.status === 'Classified' ? 'opacity-60' : ''}`}>
+							<div class="flex items-center gap-2">
+								<span class={`h-2 w-2 rounded-full ${entry.data.type === 'Community' ? 'bg-primary' : 'bg-text-secondary'}`}></span>
+								<span class="text-xs font-mono text-text-secondary uppercase tracking-widest">{entry.data.type}</span>
+							</div>
+						</div>
+
+						<h2 class={`text-4xl lg:text-5xl font-serif mb-6 leading-tight ${entry.data.status === 'Classified' ? 'text-text-secondary' : 'group-hover:text-primary transition-colors duration-500'}`}>
+							<a href={`/projects/${entry.slug}`}>{entry.data.title}</a>
+						</h2>
+						
+						<p class={`text-text-secondary text-lg leading-relaxed mb-10 ${entry.data.status === 'Classified' ? 'opacity-70' : ''}`}>
+							{entry.data.description}
+						</p>
+						
+						<div class={`flex flex-wrap items-center gap-6 ${entry.data.status === 'Classified' ? 'opacity-60' : ''}`}>
+							<a href={`/projects/${entry.slug}`} class="text-sm font-mono text-primary uppercase tracking-widest font-bold group/link flex items-center gap-2 relative">
+								<span class="border-b border-transparent group-hover/link:border-primary transition-colors duration-300 pb-0.5">READ MORE</span>
+							</a>
+						</div>
+					</div>
+				</article>
+			))}
+		</div>
+	</div>
+</BaseLayout>

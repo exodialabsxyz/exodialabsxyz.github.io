@@ -1,0 +1,32 @@
+---
+---
+<div class="fixed bottom-8 right-8 z-[100] flex flex-col gap-2 p-2 bg-bg-secondary border border-border rounded-lg shadow-xl opacity-50 hover:opacity-100 transition-opacity">
+  <div class="text-[10px] font-mono text-primary px-2 mb-1 uppercase tracking-widest">Dev_Theme</div>
+  <button data-theme-btn="dark" class="px-3 py-1 text-[10px] font-mono hover:bg-primary hover:text-white transition-colors text-left rounded-lg">DARK</button>
+  <button data-theme-btn="light" class="px-3 py-1 text-[10px] font-mono hover:bg-primary hover:text-white transition-colors text-left rounded-lg">LIGHT</button>
+  <button data-theme-btn="cyber" class="px-3 py-1 text-[10px] font-mono hover:bg-primary hover:text-white transition-colors text-left rounded-lg">CYBER</button>
+  <button data-theme-btn="minimalist" class="px-3 py-1 text-[10px] font-mono hover:bg-primary hover:text-white transition-colors text-left rounded-lg">MINIMAL</button>
+  <button data-theme-btn="oceanic" class="px-3 py-1 text-[10px] font-mono hover:bg-primary hover:text-white transition-colors text-left rounded-lg">OCEANIC</button>
+  <button data-theme-btn="reaper" class="px-3 py-1 text-[10px] font-mono hover:bg-primary hover:text-white transition-colors text-left rounded-lg">REAPER</button>
+  <button data-theme-btn="solarized" class="px-3 py-1 text-[10px] font-mono hover:bg-primary hover:text-white transition-colors text-left rounded-lg">SOLARIZED</button>
+  <button data-theme-btn="ethereal" class="px-3 py-1 text-[10px] font-mono hover:bg-primary hover:text-white transition-colors text-left rounded-lg">ETHEREAL</button>
+  <button data-theme-btn="aurora" class="px-3 py-1 text-[10px] font-mono hover:bg-primary hover:text-white transition-colors text-left rounded-lg">AURORA</button>
+</div>
+
+<script>
+  const buttons = document.querySelectorAll('[data-theme-btn]');
+  
+  // Set initial theme
+  const savedTheme = localStorage.getItem('theme') || 'aurora';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const theme = btn.getAttribute('data-theme-btn');
+      if (theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+      }
+    });
+  });
+</script>

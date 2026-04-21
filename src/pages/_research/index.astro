@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, getEntry } from 'astro:content';
+
+const researchEntries = await Promise.all(
+	(await getCollection('research'))
+		.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
+		.map(async (entry) => {
+			const author = await getEntry(entry.data.author);
+			return { ...entry, author };
+		})
+);
+---
+
+<BaseLayout title="Research">
+	<div class="max-w-7xl mx-auto py-24 px-8">
+		<header class="mb-20">
+			<h2 class="text-5xl font-serif mb-8">Research</h2>
+			<p class="text-text-secondary max-w-3xl text-lg leading-relaxed italic">
+				Continuous experimentation with emerging technologies allows for the anticipation of their impact on global security. The priority is understanding new vectors to build resilient defense systems and pivot rapidly in the face of evolving threats.
+			</p>
+		</header>
+
+		<div class="flex flex-col gap-12">
+			{researchEntries.map(entry => (
+				<article class="grid grid-cols-1 md:grid-cols-4 gap-8 pb-10 group relative">
+					<div class="md:col-span-1">
+						{entry.data.image ? (
+							<div class="mb-4 aspect-video overflow-hidden border border-border rounded-xl">
+								<img 
+									src={entry.data.image} 
+									alt={entry.data.imageAlt || entry.data.title}
+									class="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
+								/>
+							</div>
+						) : (
+							<div class="mb-4 aspect-video bg-bg-secondary/50 border border-border border-dashed rounded-xl flex items-center justify-center text-[10px] font-mono text-text-secondary">
+								NO_IMAGE
+							</div>
+						)}
+					</div>
+					<div class="md:col-span-3">
+						<h3 class="text-3xl font-serif mb-4 group-hover:text-primary transition-colors leading-tight">
+							<a href={`/research/${entry.slug}`}>{entry.data.title}</a>
+						</h3>
+						<p class="text-text-secondary text-sm mb-6 max-w-2xl leading-relaxed">
+							{entry.data.description}
+						</p>
+						<div class="flex gap-4 mb-4 text-[10px] font-mono uppercase tracking-widest">
+							<span class="text-primary">BY {entry.author?.data.name}</span>
+							<span class="text-text-secondary opacity-50">|</span>
+							<span class="text-primary">{entry.data.publishDate.getFullYear()}</span>
+							<span class="text-text-secondary">{entry.data.tags[0] || 'RESEARCH'}</span>
+						</div>
+						<div class="flex gap-8 items-center">
+							<a href={`/research/${entry.slug}`} class="text-xs font-mono text-primary flex items-center gap-2 group-hover:gap-4 transition-all after:absolute after:inset-0 after:z-10">
+								READ RESEARCH <span>→</span>
+							</a>
+						</div>
+					</div>
+				</article>
+			))}
+		</div>
+	</div>
+</BaseLayout>

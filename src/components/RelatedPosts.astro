@@ -1,0 +1,67 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+
+interface Props {
+    currentSlug: string;
+    tags: string[];
+}
+
+const { currentSlug, tags } = Astro.props;
+const isProd = import.meta.env.PROD;
+
+const allPosts = await getCollection('blog', ({ data }) => {
+    return isProd ? !data.draft : true;
+});
+
+// Find posts with shared tags
+const relatedPosts = allPosts
+    .filter(post => post.slug !== currentSlug)
+    .map(post => {
+        const sharedTags = post.data.tags.filter(tag => tags.includes(tag));
+        return { post, sharedCount: sharedTags.length };
+    })
+    .filter(item => item.sharedCount > 0)
+    .sort((a, b) => b.sharedCount - a.sharedCount)
+    .slice(0, 2)
+    .map(item => item.post);
+
+const postsWithAuthors = await Promise.all(
+    relatedPosts.map(async (post) => {
+        const author = await getEntry(post.data.author);
+        return { ...post, author };
+    })
+);
+---
+
+{postsWithAuthors.length > 0 && (
+    <section class="mt-20 pt-12 border-t border-border/50">
+        <h2 class="text-4xl font-serif mb-12">Related posts</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16">
+            {postsWithAuthors.map(item => (
+                <div class="group relative flex gap-8 items-start">
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-serif mb-4 group-hover:text-primary transition-colors leading-tight">
+                            <a href={`/blog/${item.slug}`} class="after:absolute after:inset-0 after:z-10">{item.data.title}</a>
+                        </h3>
+                        <div class="flex items-center gap-3 text-[10px] font-mono text-text-secondary uppercase tracking-widest mb-6">
+                            <span>{item.data.publishDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}</span>
+                            <span class="bg-bg-secondary px-2 py-0.5 rounded border border-border">{item.author?.data.name}</span>
+                        </div>
+                        <a href={`/blog/${item.slug}`} class="text-xs font-mono text-primary flex items-center gap-2 hover:gap-3 transition-all uppercase tracking-widest font-bold">
+                            Learn more <span>→</span>
+                        </a>
+                    </div>
+                    {item.data.image && (
+                        <div class="w-24 h-24 md:w-32 md:h-32 rounded-2xl overflow-hidden border border-border flex-shrink-0">
+                            <img 
+                                src={item.data.image} 
+                                alt={item.data.imageAlt || item.data.title}
+                                class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                            />
+                        </div>
+                    )}
+                </div>
+            ))}
+        </div>
+    </section>
+)}

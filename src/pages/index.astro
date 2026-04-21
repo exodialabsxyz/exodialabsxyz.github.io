@@ -1,0 +1,306 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection, getEntry } from 'astro:content';
+
+import VirusTotalLogo from '../components/icons/VirusTotalLogo.astro';
+
+const isProd = import.meta.env.PROD;
+const blogEntries = await getCollection('blog', ({ data }) => {
+	return isProd ? !data.draft : true;
+});
+const projectEntries = await Promise.all(
+	(await getCollection('projects', ({ data }) => {
+		return isProd ? !data.draft : true;
+	})).sort((a, b) => a.data.order - b.data.order)
+);
+---
+
+<BaseLayout title="Home" description="Exodia Labs - Next-Gen Cybersecurity Lab applying cutting-edge AI technologies to malware detection and autonomous threat intelligence.">
+	<!-- Hero Section -->
+	<section class="pt-20 pb-12 px-4 md:pt-32 md:pb-16 md:px-8 max-w-7xl mx-auto flex flex-col lg:flex-row items-center lg:items-center justify-between gap-12">
+		<div class="flex flex-col items-center lg:items-start text-center lg:text-left lg:w-1/2">
+			<h1 class="text-5xl md:text-6xl lg:text-8xl font-serif font-bold tracking-tight mb-8 leading-tight">
+				Next-Gen <br/><span class="text-primary italic">Cybersecurity Lab</span>
+			</h1>
+			<p class="text-lg md:text-xl text-text-secondary max-w-3xl leading-relaxed mb-12">
+				Applying cutting-edge AI technologies to <span class="text-text-primary">malware detection</span> and <span class="text-text-primary">autonomous threat intelligence</span>.
+			</p>
+			<div class="flex flex-col sm:flex-row gap-4 md:gap-6 w-full sm:w-auto">
+				<a href="/blog" class="bg-primary hover:bg-primary/90 text-white px-8 py-4 text-sm font-bold tracking-widest transition-all rounded-xl w-full sm:w-auto text-center">
+					EXPLORE PUBLICATIONS
+				</a>
+				<a href="/projects" class="border border-border hover:border-primary px-8 py-4 text-sm font-bold tracking-widest transition-all rounded-xl w-full sm:w-auto text-center">
+					OUR PROJECTS
+				</a>
+			</div>
+		</div>
+
+		<!-- Hero Showcase -->
+		<div class="w-full lg:w-1/2 h-[400px] md:h-[500px] relative rounded-2xl overflow-hidden border border-border/30 bg-bg-secondary/20 showcase-container bg-black">
+			{projectEntries.map((project, index) => (
+				<a 
+					href={`/projects/${project.slug}`}
+					class={`absolute inset-0 showcase-item group ${index === 0 ? 'active' : ''}`}
+				>
+					{project.data.image && (
+						<img 
+							src={project.data.image.src || project.data.image} 
+							alt={project.data.title}
+							class="w-full h-full object-cover transition-transform duration-[10000ms] ease-linear group-hover:scale-105 base-img"
+						/>
+					)}
+
+					<!-- Glitch Effect Layers -->
+					{project.data.image && (
+						<div class="absolute inset-0 pointer-events-none glitch-layers">
+							<img src={project.data.image.src || project.data.image} class="glitch-layer glitch-layer-1" alt="" />
+							<img src={project.data.image.src || project.data.image} class="glitch-layer glitch-layer-2" alt="" />
+							<img src={project.data.image.src || project.data.image} class="glitch-layer glitch-layer-3" alt="" />
+						</div>
+					)}
+					
+					<div class="absolute bottom-4 left-4 md:bottom-6 md:left-6 max-w-[85%] z-20 content-box">
+						<div class="px-6 py-4 md:px-8 md:py-5 bg-bg-primary/80 backdrop-blur-md border border-border/50 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] transform transition-all duration-500 group-hover:-translate-y-1 group-hover:border-primary/30 flex items-center justify-between min-w-[200px] md:min-w-[240px]">
+							<div class="flex flex-col gap-1">
+								<span class="text-[10px] md:text-xs font-mono text-primary uppercase tracking-widest font-bold">PROJECT</span>
+								<h3 class="text-2xl md:text-3xl font-serif text-text-primary leading-none group-hover:text-primary transition-colors tracking-tight">{project.data.title}</h3>
+							</div>
+						</div>
+					</div>
+				</a>
+			))}
+		</div>
+	</section>
+
+	<style>
+		/* Base state for showcase items */
+		.showcase-item {
+			opacity: 0;
+			z-index: 0;
+			pointer-events: none;
+		}
+		
+		/* Active state */
+		.showcase-item.active {
+			opacity: 1;
+			z-index: 10;
+			pointer-events: auto;
+		}
+
+		/* GLITCH LAYERS CSS */
+		.glitch-layers {
+			opacity: 0;
+			visibility: hidden;
+		}
+
+		/* Only show glitch layers when the .is-glitching class is applied */
+		.showcase-item.is-glitching .glitch-layers {
+			opacity: 1;
+			visibility: visible;
+		}
+
+		/* Hide base image and content during glitch */
+		.showcase-item.is-glitching .base-img,
+		.showcase-item.is-glitching .content-box {
+			opacity: 0;
+		}
+
+		.glitch-layer {
+			position: absolute;
+			inset: 0;
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+
+		.showcase-item.is-glitching .glitch-layer-1 {
+			animation: glitch-anim-1 0.2s infinite linear alternate-reverse;
+			transform: translateX(-3%);
+			filter: invert(100%) opacity(0.8);
+		}
+
+		.showcase-item.is-glitching .glitch-layer-2 {
+			animation: glitch-anim-2 0.3s infinite linear alternate-reverse;
+			transform: translateX(3%);
+			filter: hue-rotate(90deg) opacity(0.8);
+		}
+
+		.showcase-item.is-glitching .glitch-layer-3 {
+			animation: glitch-anim-3 0.25s infinite linear alternate-reverse;
+			transform: translateY(2%);
+			filter: contrast(150%) saturate(200%) opacity(0.8);
+		}
+
+		/* Clip-path animations for slicing the image */
+		@keyframes glitch-anim-1 {
+			0% { clip-path: inset(20% 0 80% 0); }
+			20% { clip-path: inset(60% 0 10% 0); }
+			40% { clip-path: inset(40% 0 50% 0); }
+			60% { clip-path: inset(80% 0 5% 0); }
+			80% { clip-path: inset(10% 0 70% 0); }
+			100% { clip-path: inset(30% 0 20% 0); }
+		}
+
+		@keyframes glitch-anim-2 {
+			0% { clip-path: inset(10% 0 60% 0); }
+			20% { clip-path: inset(30% 0 20% 0); }
+			40% { clip-path: inset(70% 0 10% 0); }
+			60% { clip-path: inset(20% 0 50% 0); }
+			80% { clip-path: inset(50% 0 30% 0); }
+			100% { clip-path: inset(5% 0 80% 0); }
+		}
+
+		@keyframes glitch-anim-3 {
+			0% { clip-path: inset(80% 0 5% 0); }
+			20% { clip-path: inset(10% 0 60% 0); }
+			40% { clip-path: inset(50% 0 30% 0); }
+			60% { clip-path: inset(5% 0 80% 0); }
+			80% { clip-path: inset(60% 0 10% 0); }
+			100% { clip-path: inset(20% 0 50% 0); }
+		}
+	</style>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			const showcaseItems = document.querySelectorAll('.showcase-item');
+			if (showcaseItems.length <= 1) return;
+
+			let currentIndex = 0;
+			let isAnimating = false;
+			
+			const rotate = () => {
+				if (isAnimating) return;
+				isAnimating = true;
+
+				const currentItem = showcaseItems[currentIndex];
+				currentIndex = (currentIndex + 1) % showcaseItems.length;
+				const nextItem = showcaseItems[currentIndex];
+
+				// 1. Empezar el glitch en la imagen actual
+				currentItem.classList.add('is-glitching');
+				
+				// 2. A la mitad del glitch, cambiar instantáneamente a la siguiente imagen (también con glitch)
+				setTimeout(() => {
+					currentItem.classList.remove('active', 'is-glitching');
+					nextItem.classList.add('active', 'is-glitching');
+					
+					// 3. Terminar el glitch en la nueva imagen
+					setTimeout(() => {
+						nextItem.classList.remove('is-glitching');
+						isAnimating = false;
+					}, 400); // 400ms glitch out
+				}, 400); // 400ms glitch in
+			};
+
+			// Esperar 8 segundos antes de hacer la primera transición, luego cambiar cada 5 segundos
+			setTimeout(() => {
+				rotate();
+				setInterval(rotate, 5000);
+			}, 8000);
+		});
+	</script>
+
+	<!-- Integrated With Section -->
+	<section class="pb-16 md:pb-24 max-w-7xl mx-auto px-4 md:px-8 w-full">
+		<a href="/projects/vt-integration" class="glass-card flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 py-6 px-8 md:py-8 md:px-16 border border-border/30 rounded-2xl bg-bg-secondary/20 hover:border-primary/40 hover:bg-bg-secondary/40 transition-all duration-500 group relative">
+			<div class="flex flex-col text-center md:text-left z-10 w-full md:w-auto">
+				<span class="text-[10px] font-mono text-primary uppercase tracking-widest mb-2 transition-all">Trusted Partner Collaboration</span>
+				<h3 class="text-lg md:text-xl font-serif text-text-secondary group-hover:text-text-primary transition-colors duration-300">Powering crowdsourced threat intelligence</h3>
+			</div>
+			
+			<div class="flex items-center opacity-80 group-hover:opacity-100 transition-opacity duration-500 z-10 mt-4 md:mt-0">
+				<VirusTotalLogo class="h-5 md:h-8 w-auto text-text-primary group-hover:text-primary transition-all duration-300" />
+			</div>
+		</a>
+	</section>
+
+	<!-- Projects Section -->
+	<section id="projects" class="py-16 md:py-24 bg-bg-secondary px-4 md:px-8">
+		<div class="max-w-7xl mx-auto">
+			<div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-16 gap-4 md:gap-8">
+				<h3 class="text-3xl md:text-4xl font-serif">Key Initiatives</h3>
+				<p class="text-text-secondary max-w-md text-sm leading-relaxed">
+					From open-source cybersecurity frameworks to integrated AI solutions and isolated internal research platforms.
+				</p>
+			</div>
+
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+				<!-- Project: Exodus -->
+				<div class="glass-card p-6 md:p-10 group relative hover:border-primary/50 transition-all duration-500 flex flex-col h-full">
+					<h4 class="text-2xl md:text-3xl font-serif mb-4">Exodus</h4>
+					<p class="text-text-secondary text-sm mb-8 leading-relaxed flex-grow">
+						An open-source agentic framework designed to orchestrate autonomous <span class="text-text-primary">swarms</span> for security operations.
+					</p>
+					<div class="flex flex-wrap gap-4 items-center justify-between mt-auto">
+						<a href="/projects/exodus" class="text-xs font-mono tracking-widest text-primary flex items-center gap-2 relative after:absolute after:inset-0 after:z-10 group/link">
+							<span class="border-b border-transparent group-hover/link:border-primary transition-colors duration-300 pb-0.5 font-bold">READ MORE</span>
+						</a>
+						<div class="flex items-center gap-2 z-20 relative">
+							<span class="h-2 w-2 rounded-full bg-primary"></span>
+							<span class="text-[10px] font-mono text-text-secondary uppercase tracking-widest">COMMUNITY</span>
+						</div>
+					</div>
+				</div>
+
+				<!-- Project: Code Reaper -->
+				<div class="glass-card p-6 md:p-10 group relative hover:border-primary/50 transition-all duration-500 flex flex-col h-full">
+					<h4 class="text-2xl md:text-3xl font-serif mb-4">Code Reaper</h4>
+					<p class="text-text-secondary text-sm mb-8 leading-relaxed flex-grow">
+						High-performance static analysis worker utilizing <span class="text-text-primary">sandboxing</span> for secure, isolated code execution.
+					</p>
+					<div class="flex flex-wrap gap-4 items-center justify-between mt-auto">
+						<a href="/projects/code-reaper" class="text-xs font-mono tracking-widest text-primary flex items-center gap-2 relative after:absolute after:inset-0 after:z-10 group/link">
+							<span class="border-b border-transparent group-hover/link:border-primary transition-colors duration-300 pb-0.5 font-bold">READ MORE</span>
+						</a>
+						<div class="flex items-center gap-2 z-20 relative">
+							<span class="h-2 w-2 rounded-full bg-text-secondary"></span>
+							<span class="text-[10px] font-mono text-text-secondary uppercase tracking-widest">INTERNAL RESEARCH</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Latest Publications -->
+	<section class="py-16 md:py-32 px-4 md:px-8">
+		<div class="max-w-7xl mx-auto">
+			<div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 md:mb-12 gap-4 md:gap-8">
+				<h2 class="text-3xl md:text-4xl font-serif">Latest Publications</h2>
+				<a href="/blog" class="text-xs font-mono text-primary border-b border-primary pb-1">VIEW ALL PUBLICATIONS</a>
+			</div>
+			<div class="flex flex-col gap-12 md:gap-16">
+				{blogEntries
+					.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
+					.slice(0, 2)
+					.map(async (item) => {
+						const author = await getEntry(item.data.author);
+						return (
+							<div class="group cursor-pointer relative flex flex-col-reverse md:flex-row gap-6 md:gap-8 items-start md:items-center border-t border-border/50 pt-8 md:pt-12 first:border-t-0 first:pt-0">
+								<div class="flex-1 w-full">
+									<div class="text-[10px] font-mono text-primary mb-2 uppercase tracking-widest">
+										BY {author?.data.name} / {item.data.publishDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+									</div>
+									<h3 class="text-2xl md:text-3xl font-serif mb-4 group-hover:text-primary transition-colors leading-tight">
+										<a href={`/blog/${item.slug}`} class="after:absolute after:inset-0 after:z-10">{item.data.title}</a>
+									</h3>
+									<p class="text-text-secondary text-sm mb-6 line-clamp-3 md:line-clamp-2 leading-relaxed max-w-xl">{item.data.description}</p>
+									<span class="text-[10px] font-mono border-b border-primary pb-0.5 text-primary uppercase tracking-widest font-bold inline-block">READ ARTICLE</span>
+								</div>
+								{item.data.image && (
+									<div class="w-full md:w-1/3 aspect-video overflow-hidden border border-border rounded-xl flex-shrink-0 relative">
+										<img 
+											src={typeof item.data.image === 'string' ? item.data.image : item.data.image.src} 
+											alt={item.data.imageAlt || item.data.title}
+											class="w-full h-full object-cover transition-all duration-500 group-hover:scale-105 absolute inset-0"
+										/>
+									</div>
+								)}
+							</div>
+						);
+					})
+				}
+			</div>
+		</div>
+	</section>
+</BaseLayout>

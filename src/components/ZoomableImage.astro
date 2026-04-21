@@ -1,0 +1,99 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  src: any; // Astro handles image imports as objects
+  alt: string;
+  class?: string;
+}
+
+const { src, alt, class: className = '' } = Astro.props;
+---
+
+<div class={`relative inline-block w-full ${className} my-8`}>
+  <!-- The clickable image -->
+  <button 
+    class="w-full text-left bg-transparent border-none p-0 m-0 cursor-pointer zoomable-trigger outline-none rounded-xl flex transition-transform hover:scale-[1.01] duration-300"
+    aria-label="Enlarge image"
+  >
+    <Image 
+      src={src} 
+      alt={alt} 
+      class="w-full h-auto m-0 rounded-xl border border-border transition-opacity hover:opacity-90"
+      format="webp"
+    />
+  </button>
+</div>
+
+<script>
+  // Setup the global lightbox on the document only once
+  let lightbox: HTMLDivElement | null = null;
+  let lightboxImg: HTMLImageElement | null = null;
+
+  function initLightbox() {
+    if (document.getElementById('global-image-lightbox')) return;
+
+    // Use a standard div overlay to avoid HTML5 <dialog> quirks and backdrop bleed bugs
+    lightbox = document.createElement('div');
+    lightbox.id = 'global-image-lightbox';
+    lightbox.className = 'fixed inset-0 z-[100] w-full h-full flex items-center justify-center bg-bg-primary/50 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300 cursor-zoom-out';
+    
+    lightboxImg = document.createElement('img');
+    lightboxImg.className = 'max-w-[95vw] max-h-[95vh] object-contain shadow-2xl block m-0 p-0 rounded-xl scale-95 transition-transform duration-300';
+    
+    lightbox.appendChild(lightboxImg);
+    document.body.appendChild(lightbox);
+
+    // Close on click anywhere
+    lightbox.addEventListener('click', () => {
+      closeLightbox();
+    });
+
+    // Close on escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox && !lightbox.classList.contains('pointer-events-none')) {
+        closeLightbox();
+      }
+    });
+  }
+
+  function closeLightbox() {
+    if (!lightbox || !lightboxImg) return;
+    lightbox.classList.remove('opacity-100', 'pointer-events-auto');
+    lightbox.classList.add('opacity-0', 'pointer-events-none');
+    lightboxImg.classList.remove('scale-100');
+    lightboxImg.classList.add('scale-95');
+    document.body.style.overflow = '';
+  }
+
+  // Setup click handlers for all zoomable images
+  document.addEventListener('DOMContentLoaded', () => {
+    initLightbox();
+
+    const triggers = document.querySelectorAll('.zoomable-trigger');
+    triggers.forEach(trigger => {
+      trigger.addEventListener('click', (e) => {
+        const img = trigger.querySelector('img');
+        if (!img || !lightbox || !lightboxImg) return;
+        
+        // Remove focus from button immediately to prevent sticky focus rings
+        if (document.activeElement instanceof HTMLElement) {
+          document.activeElement.blur();
+        }
+
+        // Use the current src of the optimized image
+        lightboxImg.src = img.currentSrc || img.src;
+        lightboxImg.alt = img.alt;
+        
+        // Prevent body scrolling
+        document.body.style.overflow = 'hidden';
+        
+        // Show lightbox with animation
+        lightbox.classList.remove('opacity-0', 'pointer-events-none');
+        lightbox.classList.add('opacity-100', 'pointer-events-auto');
+        lightboxImg.classList.remove('scale-95');
+        lightboxImg.classList.add('scale-100');
+      });
+    });
+  });
+</script>

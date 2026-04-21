@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, getEntry } from 'astro:content';
+
+const isProd = import.meta.env.PROD;
+
+const blogEntries = await Promise.all(
+	(await getCollection('blog', ({ data }) => {
+		return isProd ? !data.draft : true;
+	}))
+		.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
+		.map(async (entry) => {
+			const author = await getEntry(entry.data.author);
+			return { ...entry, author };
+		})
+);
+---
+
+<BaseLayout title="Publications" description="Latest publications and research articles from Exodia Labs regarding AI and cybersecurity.">
+	<div class="max-w-7xl mx-auto py-24 px-8">
+		<header class="mb-12">
+			<h2 class="text-5xl font-serif">Publications</h2>
+		</header>
+
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+			{blogEntries.map(entry => (
+				<article class="flex flex-col h-full pt-8 group relative">
+					{entry.data.image && (
+						<div class="mb-6 aspect-video overflow-hidden border border-border rounded-xl">
+							<img 
+								src={typeof entry.data.image === 'string' ? entry.data.image : entry.data.image.src} 
+								alt={entry.data.imageAlt || entry.data.title}
+								class="w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
+							/>
+						</div>
+					)}
+					<div class="flex items-center gap-3 text-[10px] font-mono text-text-secondary mb-4 uppercase tracking-widest">
+						<span class="text-primary">BY {entry.author?.data.name}</span>
+						<span>/</span>
+						<time>
+							{entry.data.publishDate.toLocaleDateString('en-US', {
+								year: 'numeric',
+								month: 'short',
+								day: 'numeric'
+							})}
+						</time>
+					</div>
+					<h3 class="text-2xl font-serif mb-4 group-hover:text-primary transition-colors">
+						<a href={`/blog/${entry.slug}`}>{entry.data.title}</a>
+					</h3>
+					<p class="text-text-secondary text-sm mb-8 flex-grow leading-relaxed">
+						{entry.data.description}
+					</p>
+					<div class="flex items-center justify-end">
+						<a href={`/blog/${entry.slug}`} class="text-xs font-mono text-primary border-b border-primary pb-0.5 after:absolute after:inset-0 after:z-10">READ MORE</a>
+					</div>
+				</article>
+			))}
+		</div>
+	</div>
+</BaseLayout>
