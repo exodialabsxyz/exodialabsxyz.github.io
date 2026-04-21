@@ -19,7 +19,7 @@ const { Content, headings } = await entry.render();
 
 let ogImage = entry.data.image?.src;
 if (typeof entry.data.image !== 'string' && entry.data.image) {
-	const optimized = await getImage({ src: entry.data.image, format: 'webp', width: 1200, quality: 80 });
+	const optimized = await getImage({ src: entry.data.image, format: 'jpg', width: 1200, quality: 80 });
 	ogImage = optimized.src;
 } else if (typeof entry.data.image === 'string') {
 	ogImage = entry.data.image;

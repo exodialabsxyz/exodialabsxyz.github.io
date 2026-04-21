@@ -16,7 +16,7 @@ const author = await getEntry(entry.data.author);
 
 let ogImage = entry.data.image;
 if (typeof entry.data.image !== 'string' && entry.data.image) {
-	const optimized = await getImage({ src: entry.data.image as any, format: 'webp', width: 1200, quality: 80 });
+	const optimized = await getImage({ src: entry.data.image as any, format: 'jpg', width: 1200, quality: 80 });
 	ogImage = optimized.src;
 }
 ---
