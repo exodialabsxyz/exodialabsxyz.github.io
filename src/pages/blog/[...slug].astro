@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import TableOfContents from '../../components/TableOfContents.astro';
 import RelatedPosts from '../../components/RelatedPosts.astro';
 import { getCollection, getEntry } from 'astro:content';
+import { Image } from 'astro:assets';
 
 export async function getStaticPaths() {
 	const isProd = import.meta.env.PROD;
@@ -60,10 +61,12 @@ const author = await getEntry(entry.data.author);
 
 			{entry.data.image && (
 				<div class="mb-12 overflow-hidden border border-border rounded-xl">
-					<img 
-						src={typeof entry.data.image === 'string' ? entry.data.image : entry.data.image.src} 
+					<Image 
+						src={entry.data.image} 
 						alt={entry.data.imageAlt || entry.data.title}
 						class="w-full h-auto object-contain transition-all duration-700"
+						format="webp"
+						quality="high"
 					/>
 				</div>
 			)}

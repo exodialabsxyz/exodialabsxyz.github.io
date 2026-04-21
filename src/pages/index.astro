@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection, getEntry } from 'astro:content';
+import { Image } from 'astro:assets';
 
 import VirusTotalLogo from '../components/icons/VirusTotalLogo.astro';
 
@@ -43,19 +44,21 @@ const projectEntries = await Promise.all(
 					class={`absolute inset-0 showcase-item group ${index === 0 ? 'active' : ''}`}
 				>
 					{project.data.image && (
-						<img 
-							src={project.data.image.src || project.data.image} 
+						<Image 
+							src={project.data.image} 
 							alt={project.data.title}
 							class="w-full h-full object-cover transition-transform duration-[10000ms] ease-linear group-hover:scale-105 base-img"
+							format="webp"
+							quality="mid"
 						/>
 					)}
 
 					<!-- Glitch Effect Layers -->
 					{project.data.image && (
 						<div class="absolute inset-0 pointer-events-none glitch-layers">
-							<img src={project.data.image.src || project.data.image} class="glitch-layer glitch-layer-1" alt="" />
-							<img src={project.data.image.src || project.data.image} class="glitch-layer glitch-layer-2" alt="" />
-							<img src={project.data.image.src || project.data.image} class="glitch-layer glitch-layer-3" alt="" />
+							<Image src={project.data.image} class="glitch-layer glitch-layer-1" alt="" format="webp" quality="mid" />
+							<Image src={project.data.image} class="glitch-layer glitch-layer-2" alt="" format="webp" quality="mid" />
+							<Image src={project.data.image} class="glitch-layer glitch-layer-3" alt="" format="webp" quality="mid" />
 						</div>
 					)}
 					
@@ -289,10 +292,12 @@ const projectEntries = await Promise.all(
 								</div>
 								{item.data.image && (
 									<div class="w-full md:w-1/3 aspect-video overflow-hidden border border-border rounded-xl flex-shrink-0 relative">
-										<img 
-											src={typeof item.data.image === 'string' ? item.data.image : item.data.image.src} 
+										<Image 
+											src={item.data.image} 
 											alt={item.data.imageAlt || item.data.title}
 											class="w-full h-full object-cover transition-all duration-500 group-hover:scale-105 absolute inset-0"
+											format="webp"
+											quality="mid"
 										/>
 									</div>
 								)}
