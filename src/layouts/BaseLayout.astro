@@ -64,9 +64,27 @@ const socialImageURL = new URL(image, siteURL);
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 
+		<!-- Agent Readiness Links -->
+		<link rel="service-desc" href="/openapi.yaml" />
+		<link rel="service-doc" href="/docs/api" />
+		
 		<script is:inline>
 			const theme = localStorage.getItem('theme') || 'aurora';
 			document.documentElement.setAttribute('data-theme', theme);
+
+			// WebMCP Tool exposure
+			if (typeof navigator !== 'undefined' && navigator.modelContext && navigator.modelContext.provideContext) {
+				navigator.modelContext.provideContext({
+					tools: [{
+						name: 'getLabInfo',
+						description: 'Get information about Exodia Labs and its research initiatives',
+						inputSchema: { type: 'object', properties: {} },
+						execute: async () => {
+							return { content: [{ type: 'text', text: 'Exodia Labs is a Next-Gen Cybersecurity Lab applying cutting-edge AI technologies to malware detection and autonomous threat intelligence.' }] };
+						}
+					}]
+				});
+			}
 		</script>
 	</head>
 	<body class="min-h-screen flex flex-col relative">

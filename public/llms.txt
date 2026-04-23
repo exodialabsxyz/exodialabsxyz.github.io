@@ -1,0 +1,14 @@
+# Exodia Labs
+
+> Next-Gen Cybersecurity Lab applying cutting-edge AI technologies to malware detection and autonomous threat intelligence.
+
+## Projects
+
+- Exodus: An open-source agentic framework designed to orchestrate autonomous swarms for security operations.
+- Code Reaper: High-performance static analysis worker utilizing sandboxing for secure, isolated code execution.
+- VirusTotal Integration: Powering crowdsourced threat intelligence through our browser extension.
+
+## Contact
+
+- GitHub: https://github.com/exodialabsxyz
+- Twitter: https://x.com/alegpmbt
